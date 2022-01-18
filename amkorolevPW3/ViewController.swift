@@ -37,6 +37,7 @@ class StackViewController: UIViewController {
         view.addSubview(scroll!)
         scroll?.contentSize = CGSize(width: view.frame.size.width - 40, height: 2200)
         //scroll?.backgroundColor = .blue
+        scroll?.alwaysBounceVertical = true
         
         setupStackView()
         
@@ -82,6 +83,7 @@ class StackViewController: UIViewController {
             alarm.layer.borderWidth = 2
             alarmTime.text = "\(i):00"
             alarmTime.font = alarmTime.font.withSize(45)
+            alarmTime.textColor = .black
             alarmSwitch.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
             
             //constraints
@@ -143,14 +145,68 @@ class StackViewController: UIViewController {
     }*/
 }
 
-class TableViewController: UIViewController {
-
+class TableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 300
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "eyeCell", for: indexPath) as? EyeCell
+        
+        cell?.setupEye()
+        return cell ?? UITableViewCell()
+    }
+    
+    private var table : UITableView?
+    
+    final class EyeCell : UITableViewCell {
+        
+        func setupEye() {
+            //heightAnchor.constraint(equalToConstant: 50).isActive = true
+            backgroundColor = .lightGray
+            let image = UIImageView()
+            addSubview(image)
+            image.translatesAutoresizingMaskIntoConstraints = false
+            image.topAnchor.constraint(equalTo: topAnchor, constant: CGFloat.random(in: -20...40)).isActive = true
+            image.leadingAnchor.constraint(equalTo: leadingAnchor, constant: CGFloat.random(in: 0...400)).isActive = true
+            image.image = UIImage(named: "eye")
+            image.heightAnchor.constraint(equalToConstant: 20).isActive = true
+            image.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .lightGray
         // Do any additional setup after loading the view.
+        setupTableView()
     }
 
+    private func setupTableView() {
+        table = UITableView()
+        view.addSubview(table!)
+        
+        //design
+        table?.backgroundColor = .lightGray
+        table?.delegate = self
+        table?.dataSource = self
+        table?.register(EyeCell.self, forCellReuseIdentifier: "eyeCell")
+        
+        //constraints
+        setupTableConstraints()
+    }
+    
+    private func setupTableConstraints() {
+        table?.translatesAutoresizingMaskIntoConstraints = false
+        table?.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        table?.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        table?.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        table?.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+    }
 
 }
 
