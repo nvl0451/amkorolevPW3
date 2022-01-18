@@ -31,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let items = tabBarController.tabBar.items else {
             return
         }
-        let titles = ["Stack", "Table", "Collection"]
+        let titles = ["Scroll/Stack", "Table", "Collection"]
         let images = [UIImage(named: "stack"), UIImage(named: "table"), UIImage(named: "collection")]
         
         for i in 0..<viewControllers.count {
