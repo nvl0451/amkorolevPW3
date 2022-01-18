@@ -164,6 +164,13 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     private var table : UITableView?
     
     final class EyeCell : UITableViewCell {
+        override func prepareForReuse() {
+            for subview in subviews {
+                if subview is UIImageView {
+                    subview.removeFromSuperview()
+                }
+            }
+        }
         
         func setupEye() {
             //heightAnchor.constraint(equalToConstant: 50).isActive = true
