@@ -155,9 +155,9 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "eyeCell", for: indexPath) as? EyeCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "alarmCell", for: indexPath) as? AlarmCell
         
-        cell?.setupEye()
+        cell?.setupAlarm(time: Int.random(in: 0...240))
         return cell ?? UITableViewCell()
     }
     
@@ -186,6 +186,31 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
+    final class AlarmCell : UITableViewCell {
+        override func prepareForReuse() {
+            for subview in subviews {
+                subview.removeFromSuperview()
+            }
+        }
+        
+        func setupAlarm(time: Int) {
+            backgroundColor = .lightGray
+            let label = UILabel()
+            let swtch = UISwitch()
+            let myTime = time % 24
+            addSubview(label)
+            addSubview(swtch)
+            label.text = "\(myTime):00"
+            swtch.isOn = Bool.random()
+            label.translatesAutoresizingMaskIntoConstraints = false
+            swtch.translatesAutoresizingMaskIntoConstraints = false
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20).isActive = true
+            label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+            swtch.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30).isActive = true
+            swtch.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .lightGray
@@ -201,7 +226,8 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
         table?.backgroundColor = .lightGray
         table?.delegate = self
         table?.dataSource = self
-        table?.register(EyeCell.self, forCellReuseIdentifier: "eyeCell")
+        //table?.register(EyeCell.self, forCellReuseIdentifier: "eyeCell")
+        table?.register(AlarmCell.self, forCellReuseIdentifier: "alarmCell")
         
         //constraints
         setupTableConstraints()
