@@ -243,27 +243,87 @@ class TableViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
 }
 
-class CollectionViewController: UIViewController {
+class CollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+    private var alarmSize: Int = 100
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return alarmSize
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let aCell = collectionView.dequeueReusableCell(withReuseIdentifier: "AlarmCell", for: indexPath) as! AlarmCell
+        //aCell.backgroundColor = .cyan
+        aCell.setColor(isOn: isOn[indexPath.item])
+        return aCell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        isOn[indexPath.item] = !isOn[indexPath.item]
+        collectionView.reloadData()
+    }
+    
     private var collection: UICollectionView?
     
+    private var isOn: [Bool] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .gray
         setupCollectionView()
+        isOn = [Bool](repeating: false, count: alarmSize)
     }
 
     private func setupCollectionView() {
-        /*let layoutFlow = UICollectionViewFlowLayout()
+        let layoutFlow = UICollectionViewFlowLayout()
         layoutFlow.sectionInset = UIEdgeInsets(top: 20, left: 10, bottom: 10, right: 10)
         layoutFlow.itemSize = CGSize(width: 60, height: 60)
+        layoutFlow.scrollDirection = .horizontal
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layoutFlow)
+        collection.dataSource = self
+        collection.delegate = self
         view.addSubview(collection)
+        collection.register(AlarmCell.self, forCellWithReuseIdentifier: "AlarmCell")
+        collection.translatesAutoresizingMaskIntoConstraints = false
         collection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         collection.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         collection.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         collection.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        collection.backgroundColor = .cyan
-        self.collection = collection*/
+        collection.backgroundColor = .gray
+        self.collection = collection
+    }
+    
+    final class AlarmCell: UICollectionViewCell {
+        override init(frame: CGRect) {
+            super.init(frame: .zero)
+            contentView.addSubview(timeBox)
+            contentView.backgroundColor = .white
+            
+            timeBox.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+            timeBox.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+            timeBox.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+            timeBox.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        fileprivate let timeBox: UILabel = {
+            let tb = UILabel()
+            tb.translatesAutoresizingMaskIntoConstraints = false
+            tb.contentMode = .scaleAspectFill
+            tb.clipsToBounds = true
+            tb.text = "12:00"
+            tb.textColor = .black
+            return tb
+        }()
+        
+        func setColor(isOn: Bool) {
+            if isOn == true {
+                contentView.backgroundColor = .cyan
+            } else {
+                contentView.backgroundColor = .white
+            }
+        }
     }
 }
